@@ -1,0 +1,19 @@
+on: push
+
+jobs:
+  hercules-charts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Hercules Insights
+        uses: src-d/hercules@master
+
+      - name: Upload Hercules Charts as Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: hercules_charts
+          path: hercules_charts.tar
