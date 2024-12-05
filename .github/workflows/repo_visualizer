@@ -1,0 +1,36 @@
+name: Generate Repository Diagram
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-diagram:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Generate the repository diagram
+      - name: Update repository diagram
+        id: generate_diagram
+        uses: githubocto/repo-visualizer@0.7.1
+        with:
+          output_file: "images/diagram.svg" # Save diagram to images/diagram.svg
+          excluded_paths: "dist,node_modules" # Exclude certain paths
+          artifact_name: "repo-diagram" # Save the diagram as an artifact
+          should_push: false # Avoid pushing changes directly
+          commit_message: "Repo Visualizer: Update repository diagram [skip ci]"
+
+      # Step 3: Upload the artifact for later download
+      - name: Upload the diagram as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "repository-diagram"
+          path: "images/diagram.svg"
+
+      # Optional: Access diagram using the SVG output
+      - name: Print SVG diagram content
+        run: echo "${{ steps.generate_diagram.outputs.svg }}"
